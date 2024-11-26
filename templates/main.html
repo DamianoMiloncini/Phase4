@@ -4,6 +4,13 @@
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='styling.css') }}">
     <title>IoT Dashboard</title>
+    <!-- <link rel="stylesheet" type="text/css" href="/static/styling.css">  -->
+    <script>
+        function toggleDarkMode() {
+           var document = document.body;
+           document.classList.toggle("dark-mode");
+        }
+        </script>
 </head>
 
 <body>
@@ -17,9 +24,11 @@
             </div>
 
             <div class="app-content">
-                <button class="button button-block">
-                    <span class="subtle">Date</span> <span id="currentDate"></span>
-                </button>
+                <label class="switch">
+                    <input type="checkbox" onclick="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+                <span>Dark Mode</span>
                 <br>
 
                 <div class="flex-button-container">
@@ -65,7 +74,7 @@
                           <span title="--i:19"></span>
                           <span title="--i:20"></span>
                       </div>
-                      <div id="minor-ticks-bottom-mask"></div>
+                      <div id="minor-ticks-bottom-mask" ></div>
                       <div id="bottom-circle"></div>
                       <svg  id="SVGTemperature" version="1.1" baseProfile="full" width="190" height="190" xmlns="http://www.w3.org/2000/svg">
                           <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="0">
