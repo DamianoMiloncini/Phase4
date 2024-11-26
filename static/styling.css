@@ -30,10 +30,96 @@
     box-sizing: inherit;
   }
   
-  body {
-    background-color: #f2f2f2;
-  }
-  
+      body {
+        padding: 25px;
+        background-color: white;
+        color: black;
+        font-size: 25px;
+      }
+      .dark-mode {
+        background-color: #222;
+        color: white;
+      }
+      body.dark-mode .container,
+      body.dark-mode .app-container,
+      body.dark-mode .button,
+      body.dark-mode .app-top-bar,
+      body.dark-mode .app-content {
+          background-color: #222; 
+          color: white;
+          border-color: #444;
+      }
+      
+      body.dark-mode .button {
+          background-color: #333;
+          color: white;
+      }
+      
+      body.dark-mode #gauge {
+          background-color: #222;
+          border-color: #444;
+      }
+      
+      body.dark-mode #center-circle {
+          background-color: #333;
+          color: white;
+      }
+      
+      body.dark-mode .app-heading {
+          color: white;
+      }
+      
+      .switch {
+          position: relative;
+          display: inline-block;
+          width: 34px;
+          height: 20px;
+      }
+      
+      .switch input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+      }
+      
+      .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          transition: 0.4s;
+          border-radius: 20px;
+      }
+      
+      .slider:before {
+          position: absolute;
+          content: "";
+          height: 16px;
+          width: 16px;
+          left: 2px;
+          bottom: 2px;
+          background-color: white;
+          transition: 0.4s;
+          border-radius: 50%;
+      }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(25px);
+        }
+
+        .container, .app-container, .button, .app-top-bar, .app-content {
+                    color: black;
+      }
+
+
+
   .color-cool {
     color: #077dfe;
   }
@@ -336,6 +422,8 @@
     font-weight: 700;
     top: 40px;
   }
-  
+
+
+
   
 
