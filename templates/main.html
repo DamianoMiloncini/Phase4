@@ -29,6 +29,10 @@
                     <span class="slider"></span>
                 </label>
                 <span>Dark Mode</span>
+                <button class="button button-block">
+                    <span class="subtle">Date</span> <span id="currentDate"></span>
+                  </button>
+                  <br>
                 <br>
 
                 <div class="flex-button-container">
@@ -85,7 +89,7 @@
                           stroke-linecap="round" stroke-dasharray="0 282.78"/>
                       </svg>
                       <div id="center-circle">
-                          <span id="temperature">{{temperature}} °C</span>
+                          <span id="temperature">{{ temperature }} °C</span>
                       </div>
                     </div>
                     <label id="temperatureText">Normal</label>
@@ -163,6 +167,14 @@
                         <div id="emailSent" style="display:none;">Email has been sent</div>
 
                     </button>
+
+                    <button class="button button-large"></button>
+
+                    <p id="deviceCount">Number of Devices: Waiting for data...</p>
+                    <p>RSSI Threshold = - 50</p>
+
+                    </button>
+
                 </div>
                 <br>
             </div>
@@ -212,6 +224,101 @@
 
         // Call the update function every 2 seconds
         setInterval(updateDashboard, 2000);
+
+        async function fetchDeviceCount() {
+          try {
+              const response = await fetch('/devices');
+              if (!response.ok) {
+                  throw new Error("Failed to fetch data");
+              }
+              const data = await response.json();
+              document.getElementById('deviceCount').textContent = `Number of Devices: ${data.numberOfDevices}`;
+          } catch (error) {
+              console.error("Error fetching device count:", error);
+              document.getElementById('deviceCount').textContent = "Error fetching data";
+          }
+      }
+
+      // Fetch data every 5 seconds
+      setInterval(fetchDeviceCount, 2000);
+      fetchDeviceCount(); // Fetch immediately on page load
+
+      function updateSensorData() {
+                fetch('/sensor_data')
+                .then(response => response.json())
+                .then(data => {
+                    // Get the temperature and humidity elements
+                    const temperatureElement = document.querySelector("#temperature");
+                    const tempLabel = document.getElementById("temperatureText");
+                    const arc = document.querySelector("#SVGTemperature path");
+        
+                    const humidityElement = document.querySelector("#humidity");
+                    const humidLabel = document.getElementById("humidityText");
+                    const humidityArc = document.querySelector("#SVGHumidity path");
+        
+                    // Update temperature display
+                    const fixedTemperatureValue = parseFloat(data.temperature);
+                    console.log(fixedTemperatureValue);
+                    temperatureElement.textContent = `${fixedTemperatureValue} °C`;
+        
+                    if (fixedTemperatureValue <= 10) {
+                        tempLabel.textContent = 'Cold';
+                    } else if (fixedTemperatureValue >= 24) {
+                        tempLabel.textContent = 'Hot - Check email to enable fan';
+                    } else {
+                        tempLabel.textContent = 'Normal';
+                    }
+        
+                    const arc_length = arc.getTotalLength();
+                    const min = 0;
+                    const max = 30;
+                    const step = arc_length / (max - min);
+                    const value = (fixedTemperatureValue - min) * step;
+                    arc.style.strokeDasharray = `${value} ${arc_length - value}`;
+        
+                    // Update humidity display
+                    const fixedHumidityValue = parseFloat(data.humidity);
+                    humidityElement.textContent = `${fixedHumidityValue} %`;
+        
+                    if (fixedHumidityValue <= 30) {
+                        humidLabel.textContent = 'Dry';
+                    } else if (fixedHumidityValue >= 65) {
+                        humidLabel.textContent = 'Very Humid';
+                    } else {
+                        humidLabel.textContent = 'Normal';
+                    }
+        
+                    const humidityArcLength = humidityArc.getTotalLength();
+                    const hMin = 0;
+                    const hMax = 80;
+                    const hStep = humidityArcLength / (hMax - hMin);
+                    const hValue = (fixedHumidityValue - hMin) * hStep;
+                    humidityArc.style.strokeDasharray = `${hValue} ${humidityArcLength - hValue}`;
+                })
+                .catch(error => console.error('Error fetching sensor data:', error));
+            }
+        
+            // Set an interval to update sensor data every 5 seconds
+            setInterval(updateSensorData, 1500);
+        
+            // Initial fetch for immediate display on page load
+            updateSensorData();
+        </script>
+        
+
+        <script>
+          function fetchFanStatus() {
+            fetch('/fan_status')
+            .then(response => response.json())
+            .then(data => {
+              const fanState = document.getElementById('fanState');
+              fanState.textContent = data.status;
+              fanState.style.color = data.status === 'ON' ? 'green' : 'red';
+            })
+            .catch(error => console.error('Error fetching fan status: ', error));
+          }
+          setInterval(fetchFanStatus, 2000);
+        </script>
     </script>
 </body>
 
