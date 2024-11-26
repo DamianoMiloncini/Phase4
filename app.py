@@ -72,6 +72,14 @@ def on_message(client, userdata, msg):
         # Handle RFID tag
         rfid_tag = msg.payload.decode("utf-8")
         print(f"Received RFID: {rfid_tag}")
+        send_email(
+                    sender_email,
+                    app_password,
+                    receiver_email,
+                    "RFID scanned",
+                    notification_message,
+                )
+        print("The LED has been turned on and the email was sent")
     
     elif msg.topic == "sensor/light":
         # Handle light intensity
