@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styling.css') }}">
+    <title>IoT Dashboard</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="app-container">
+            <div class="app-top-bar">
+                <button class="button button-small">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1 class="app-heading">IoT Dashboard {{ username }}</h1>
+            </div>
+
+            <div class="app-content">
+                <button class="button button-block">
+                    <span class="subtle">Date</span> <span id="currentDate"></span>
+                </button>
+                <br>
+
+                <div class="flex-button-container">
+                    <button class="button button-large">
+                    <!-- <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="snowflake" class="color-cool" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M440.1 355.2l-39.2-23 34.1-9.3c8.4-2.3 13.4-11.1 11.1-19.6l-4.1-15.5c-2.2-8.5-10.9-13.6-19.3-11.3L343 298.2 271.2 256l71.9-42.2 79.7 21.7c8.4 2.3 17-2.8 19.3-11.3l4.1-15.5c2.2-8.5-2.7-17.3-11.1-19.6l-34.1-9.3 39.2-23c7.5-4.4 10.1-14.2 5.8-21.9l-7.9-13.9c-4.3-7.7-14-10.3-21.5-5.9l-39.2 23 9.1-34.7c2.2-8.5-2.7-17.3-11.1-19.6l-15.2-4.1c-8.4-2.3-17 2.8-19.3 11.3l-21.3 81-71.9 42.2v-84.5L306 70.4c6.1-6.2 6.1-16.4 0-22.6l-11.1-11.3c-6.1-6.2-16.1-6.2-22.2 0l-24.9 25.4V16c0-8.8-7-16-15.7-16h-15.7c-8.7 0-15.7 7.2-15.7 16v46.1l-24.9-25.4c-6.1-6.2-16.1-6.2-22.2 0L142.1 48c-6.1 6.2-6.1 16.4 0 22.6l58.3 59.3v84.5l-71.9-42.2-21.3-81c-2.2-8.5-10.9-13.6-19.3-11.3L72.7 84c-8.4 2.3-13.4 11.1-11.1 19.6l9.1 34.7-39.2-23c-7.5-4.4-17.1-1.8-21.5 5.9l-7.9 13.9c-4.3 7.7-1.8 17.4 5.8 21.9l39.2 23-34.1 9.1c-8.4 2.3-13.4 11.1-11.1 19.6L6 224.2c2.2 8.5 10.9 13.6 19.3 11.3l79.7-21.7 71.9 42.2-71.9 42.2-79.7-21.7c-8.4-2.3-17 2.8-19.3 11.3l-4.1 15.5c-2.2 8.5 2.7 17.3 11.1 19.6l34.1 9.3-39.2 23c-7.5 4.4-10.1 14.2-5.8 21.9L10 391c4.3 7.7 14 10.3 21.5 5.9l39.2-23-9.1 34.7c-2.2 8.5 2.7 17.3 11.1 19.6l15.2 4.1c8.4 2.3 17-2.8 19.3-11.3l21.3-81 71.9-42.2v84.5l-58.3 59.3c-6.1 6.2-6.1 16.4 0 22.6l11.1 11.3c6.1 6.2 16.1 6.2 22.2 0l24.9-25.4V496c0 8.8 7 16 15.7 16h15.7c8.7 0 15.7-7.2 15.7-16v-46.1l24.9 25.4c6.1 6.2 16.1 6.2 22.2 0l11.1-11.3c6.1-6.2 6.1-16.4 0-22.6l-58.3-59.3v-84.5l71.9 42.2 21.3 81c2.2 8.5 10.9 13.6 19.3 11.3L375 428c8.4-2.3 13.4-11.1 11.1-19.6l-9.1-34.7 39.2 23c7.5 4.4 17.1 1.8 21.5-5.9l7.9-13.9c4.6-7.5 2.1-17.3-5.5-21.7z"></path></svg> -->
+                    <h3 class="app-heading">Temperature</h3>
+                    <br>
+                    
+                    <!-- Gauge -->
+                    <div id="gauge">
+                      <div id="major-ticks">
+                          <span>10℃</span>
+                          <span>20℃</span>
+                          <span>30℃</span>
+                      </div>
+                      <div id="minor-ticks">
+                          <span title="--i:1"></span>
+                          <span title="--i:2"></span>
+                          <span title="--i:3"></span>
+                          <span title="--i:4"></span>
+                          <span title="--i:5"></span>
+                          <span title="--i:6"></span>
+                          <span title="--i:7"></span>
+                          <span title="--i:8"></span>
+                          <span title="--i:9"></span>
+                          <span title="--i:10"></span>
+                          <span title="--i:11"></span>
+                          <span title="--i:12"></span>
+                          <span title="--i:13"></span>
+                          <span title="--i:14"></span>
+                          <span title="--i:15"></span>
+                          <span title="--i:16"></span>
+                          <span title="--i:17"></span>
+                          <span title="--i:18"></span>
+                          <span title="--i:19"></span>
+                          <span title="--i:20"></span>
+                      </div>
+                      <div id="minor-ticks-bottom-mask"></div>
+                      <div id="bottom-circle"></div>
+                      <svg  id="SVGTemperature" version="1.1" baseProfile="full" width="190" height="190" xmlns="http://www.w3.org/2000/svg">
+                          <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="0">
+                              <stop offset="0%" stop-color="#b96e85"/>
+                              <stop offset="100%" stop-color="#ae69bb"/>
+                          </linearGradient>
+                          <path d="M5 95 A80 80 0 0 1 185 95" stroke=url(#gradient) fill="none" stroke-width="10"
+                          stroke-linecap="round" stroke-dasharray="0 282.78"/>
+                      </svg>
+                      <div id="center-circle">
+                          <span id="temperature">{{temperature}} °C</span>
+                      </div>
+                    </div>
+                    <label id="temperatureText">Normal</label>
+                </button>
+
+                <button class="button button-large" id="fanButton">
+                  <h3 class = "app-heading">Fan Status</h3>
+                  <img style="width: 200px;" src="{{ url_for('static', filename='fanOn.png') }}">
+                  <span id="fanState">Checking...</span>
+                </button>
+                
+
+                  <button class="button button-large">
+                    <!-- <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="fire-alt" class="color-warm" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M323.56 51.2c-20.8 19.3-39.58 39.59-56.22 59.97C240.08 73.62 206.28 35.53 168 0 69.74 91.17 0 209.96 0 281.6 0 408.85 100.29 512 224 512s224-103.15 224-230.4c0-53.27-51.98-163.14-124.44-230.4zm-19.47 340.65C282.43 407.01 255.72 416 226.86 416 154.71 416 96 368.26 96 290.75c0-38.61 24.31-72.63 72.79-130.75 6.93 7.98 98.83 125.34 98.83 125.34l58.63-66.88c4.14 6.85 7.91 13.55 11.27 19.97 27.35 52.19 15.81 118.97-33.43 153.42z"></path></svg> -->
+                    <h3 class="app-heading">Humidity</h3>
+                    
+                    <!-- Humidity -->
+                    <div id="gauge">
+                      <div id="major-ticks">
+                          <span>0%</span>
+                          <span>40%</span>
+                          <span>80%</span>
+                      </div>
+                      <div id="minor-ticks">
+                          <span title="--i:1"></span>
+                          <span title="--i:2"></span>
+                          <span title="--i:3"></span>
+                          <span title="--i:4"></span>
+                          <span title="--i:5"></span>
+                          <span title="--i:6"></span>
+                          <span title="--i:7"></span>
+                          <span title="--i:8"></span>
+                          <span title="--i:9"></span>
+                          <span title="--i:10"></span>
+                          <span title="--i:11"></span>
+                          <span title="--i:12"></span>
+                          <span title="--i:13"></span>
+                          <span title="--i:14"></span>
+                          <span title="--i:15"></span>
+                          <span title="--i:16"></span>
+                          <span title="--i:17"></span>
+                          <span title="--i:18"></span>
+                          <span title="--i:19"></span>
+                          <span title="--i:20"></span>
+                      </div>
+                      <div id="minor-ticks-bottom-mask"></div>
+                      <div id="bottom-circle"></div>
+                      <svg  id="SVGHumidity" version="1.1" baseProfile="full" width="190" height="190" xmlns="http://www.w3.org/2000/svg">
+                          <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="0">
+                              <stop offset="0%" stop-color="#b96e85"/>
+                              <stop offset="100%" stop-color="#ae69bb"/>
+                          </linearGradient>
+                          <path d="M5 95 A80 80 0 0 1 185 95" stroke=url(#gradient) fill="none" stroke-width="10"
+                          stroke-linecap="round" stroke-dasharray="0 282.78"/>
+                      </svg>
+                      <div id="center-circle">
+                        <span id="humidity">{{humidity}} %</span>
+                      </div>
+                    </div>
+                    <label id="humidityText">Normal</label>
+                    
+
+                  </button>
+                    <button class="button button-large">
+
+                        <img id="ledImage" style="width: 25%" src="{{ url_for('static', filename='light_off.png') }}"
+                            alt="LED Status Image">
+                        <p id="ledStatus">Light Status: {{ led_status }}</p>
+
+                        <input type="range" id="lightSlider" min="0" max="600" value="{{ light_intensity }}" disabled
+                            style="width: 100%;">
+
+                        <p id="lightIntensity">Light Intensity: {{ light_intensity }}</p>
+
+                        <div id="emailSent" style="display:none;">Email has been sent</div>
+
+                    </button>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+<!-- 
+    <script>
+        // Function to update the date
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('currentDate').textContent = formattedDate;
+
+        // Function to update light intensity, LED status, apply ombre effect on slider and handle email sent text
+        function updateDashboard() {
+            fetch('/get_status')
+                .then(response => response.json())
+                .then(data => {
+                    // Update light intensity and LED status
+                    document.getElementById('ledStatus').textContent = `Light Status: ${data.led_status}`;
+                    document.getElementById('lightIntensity').textContent = `Light Intensity: ${data.light_intensity}`;
+
+                    // Update the slider value
+                    const lightIntensity = data.light_intensity;
+                    document.getElementById('lightSlider').value = lightIntensity;
+
+                    // Apply the ombre effect (gradient background) to the slider
+                    const gradient = `linear-gradient(to right, rgba(255, 255, 0, 0.3) ${lightIntensity / 600 * 100}%, rgba(255, 255, 0, 1) ${lightIntensity / 600 * 100}%)`;
+                    document.getElementById('lightSlider').style.background = gradient;
+
+                    // Switch the image based on LED status
+                    const ledImage = document.getElementById('ledImage');
+                    if (data.led_status === 'ON') {
+                        ledImage.src = "{{ url_for('static', filename='light_on.png') }}";  // Image when light is ON
+                        document.getElementById('emailSent').style.display = 'block'; // Show the email sent message
+                    } else {
+                        ledImage.src = "{{ url_for('static', filename='light_off.png') }}"; // Image when light is OFF
+                        document.getElementById('emailSent').style.display = 'none';  // Hide the email sent message
+                    }
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call the update function every 2 seconds
+        setInterval(updateDashboard, 2000);
+    </script> -->
+</body>
+
+</html>

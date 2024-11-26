@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <script>
+        // Function to poll the server every 2 seconds
+        function checkRFID() {
+            fetch('/check_rfid') // Send a GET request to the Flask server
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Parse the JSON response
+                    } else if (response.status === 403) {
+                        document.getElementById('status').innerText = "Unauthorized RFID tag. Try again.";
+                        throw new Error("Unauthorized RFID");
+                    } else {
+                        throw new Error("Error checking RFID");
+                    }
+                })
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/dashboard'; // Redirect to the IoT dashboard
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+
+        // Start polling every 2 seconds
+        setInterval(checkRFID, 2000);
+    </script>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <p>Please scan your RFID tag.</p>
+    <div id="status">Waiting for RFID...</div>
+</body>
+</html>
