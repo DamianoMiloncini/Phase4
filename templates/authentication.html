@@ -7,10 +7,11 @@
     <title>Authentication</title>
     <script>
         // Function to poll the server every 2 seconds
-        function checkRFID() {
+        function checkRFID() {      
             fetch('/check_rfid') // Send a GET request to the Flask server
                 .then(response => {
                     if (response.ok) {
+                        
                         return response.json(); // Parse the JSON response
                     } else if (response.status === 403) {
                         document.getElementById('status').innerText = "Unauthorized RFID tag. Try again.";
@@ -21,6 +22,7 @@
                 })
                 .then(data => {
                     if (data.success) {
+                        document.getElementById('status').innerText = "Authorized RFID tag!";
                         window.location.href = '/dashboard'; // Redirect to the IoT dashboard
                     }
                 })
@@ -30,12 +32,59 @@
         }
 
         // Start polling every 2 seconds
-        setInterval(checkRFID, 2000);
+        setInterval(checkRFID, 1000);
     </script>
+    <style>
+        /* Styles for the entire page */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Wrapper styles */
+#wrapper {
+    text-align: center;
+    padding: 40px 200px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Header styles */
+#wrapper h1 {
+    font-size: 2rem;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+/* Paragraph styles */
+#wrapper p {
+    font-size: 1rem;
+    color: #555555;
+    margin-bottom: 20px;
+}
+
+/* Status message styles */
+#wrapper #status {
+    font-size: 1.2rem;
+    color: #ff5722;
+    font-weight: bold;
+}
+
+    </style>
 </head>
 <body>
-    <h1>Welcome!</h1>
-    <p>Please scan your RFID tag.</p>
-    <div id="status">Waiting for RFID...</div>
+
+    <div id="wrapper">
+        <h1>Welcome!</h1>
+        <p>Please scan your RFID tag.</p>
+        <div id="status">Waiting for RFID...</div>
+    </div>
+    
 </body>
 </html>

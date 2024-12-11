@@ -17,8 +17,8 @@ cursor.execute("""
 
 # Insert preset data
 preset_data = [
-    ("53c7a8e", "Damiano", 28, 45),
-    
+    ("53c7a8e", "Damiano", 400, 25),
+    ("3068b31f", "Michaella", 500, 20)
 ]
 
 #For dropping table

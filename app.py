@@ -11,18 +11,23 @@ import threading
 import sqlite3
 import Freenove_DHT as DHT
 import time
-
+import imaplib
+import email
 app = Flask(__name__)
 app.secret_key = "IoT_2024"  # Simple key for local testing
+
+
 
 # MQTT settings
 MQTT_BROKER = "172.20.10.3"
 MQTT_TOPIC = "rfid/scan"
 mqtt_client = mqtt.Client()
+GPIO.cleanup()
 
 #GPIO setupd
-LEDpin = 16 #example
-GPIO.setmode(GPIO.BOARD)
+
+LEDpin = 18 #example
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(LEDpin, GPIO.OUT)
 
 #Email setup
@@ -34,12 +39,12 @@ topic = "sensor/light"
 
 # GPIO and DHT setup
 GPIO.setwarnings(False)
+#GPIO.setmode(GPIO.BCM)
+DHTPin = 13
+Motor1 = 22
+Motor2 = 27
+Motor3 = 17
 #GPIO.setmode(GPIO.BOARD)
-DHTPin = 33
-Motor1 = 11
-Motor2 = 13
-Motor3 = 15
-
 GPIO.setup(Motor1, GPIO.OUT)
 GPIO.setup(Motor2, GPIO.OUT)
 GPIO.setup(Motor3, GPIO.OUT)
@@ -54,6 +59,8 @@ dht_lock = threading.Lock()  # Lock for thread safety
 # Global variables for data
 rfid_tag = None
 current_light_intensity = 0
+temp_db = 20
+intensity_db = 400
 
 def send_email(sender_email, sender_password, receiver_email, subject, body):
     try:
@@ -85,6 +92,7 @@ def receive_email(email_address, app_password, num_emails=5):
             if isinstance(response_part, tuple):
                 email_body = response_part[1]
                 email_message = email.message_from_bytes(email_body)
+
                 flags = response_part[0].decode().split(' ')
                 if '\\Seen' not in flags and email_message.is_multipart():
                     for part in email_message.walk():
@@ -92,6 +100,7 @@ def receive_email(email_address, app_password, num_emails=5):
                             try:
                                 content = part.get_payload(decode=True).decode('utf-8')
                                 if "YES" in content.strip().upper():
+                                    print('Email recieved')
                                     return True
                             except UnicodeDecodeError:
                                 return False
@@ -103,13 +112,12 @@ def receive_email(email_address, app_password, num_emails=5):
 def monitor_temperature():
     global alert_sent
     dht = DHT.DHT(DHTPin)
-
     while True:
         readValue = dht.readDHT11()
         if readValue == dht.DHTLIB_OK:
             current_temp = dht.temperature
             with alert_lock:
-                if current_temp > 20 and not alert_sent:
+                if current_temp > 2000 and not alert_sent:
                     # Send email if the temperature is too high and no alert has been sent
                     send_email(
                         sender_email,
@@ -122,7 +130,7 @@ def monitor_temperature():
                     print('Email sent for temperature alert.')
 
                     # Wait and check for the user’s response
-                    time.sleep(40)
+                    time.sleep(20)
                     if receive_email(sender_email, app_password, num_emails=1):
                         print('Turning fan on.')
                         GPIO.output(Motor1, GPIO.HIGH)
@@ -137,6 +145,7 @@ def monitor_temperature():
                     # Reset alert if temperature drops below threshold
                     alert_sent = False
         time.sleep(10)  # Interval to check temperature
+
 
 # Start the background thread
 threading.Thread(target=monitor_temperature, daemon=True).start()
@@ -163,14 +172,19 @@ def on_message(client, userdata, msg):
         # Handle RFID tag
         rfid_tag = msg.payload.decode("utf-8")
         print(f"Received RFID: {rfid_tag}")
+
+        # Define the notification message
+        notification_message = f"A new RFID tag was scanned: {rfid_tag}"
+
         send_email(
-                    sender_email,
-                    app_password,
-                    receiver_email,
-                    "RFID scanned",
-                    notification_message,
-                )
-        print("The LED has been turned on and the email was sent")
+            sender_email,
+            app_password,
+            receiver_email,
+            "RFID scanned",
+            notification_message,  # Now this variable is defined
+        )
+        print("RFID email sent")
+
     
     elif msg.topic == "sensor/light":
         # Handle light intensity
@@ -178,7 +192,7 @@ def on_message(client, userdata, msg):
             current_light_intensity = int(msg.payload.decode())
             print(f"Received light intensity: {current_light_intensity}")
 
-            if current_light_intensity > 40000:
+            if current_light_intensity > 50000:
                 GPIO.output(LEDpin, GPIO.HIGH)
                 current_time = datetime.now().strftime("%H:%M")
                 notification_message = f"The light is ON at {current_time}"
@@ -275,7 +289,10 @@ def iot_dashboard():
     username = session.get("username")
     user_id = session.get("user_id")
     light_threshold = session.get("light_threshold")
+    intensity_db = light_threshold
     temperature_threshold = session.get("temperature_threshold")
+    temp_db = temperature_threshold
+    print(intensity_db)
     return render_template("main.html", username=username, user_id=user_id, light_threshold=light_threshold, temp_threshold=temperature_threshold, light_intensity=current_light_intensity, led_status=led_status, temperature=current_temp, humidity=current_humidity)
 
 @app.route('/sensor_data')
